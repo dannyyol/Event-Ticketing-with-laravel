@@ -22,29 +22,6 @@ use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Support\Facades\Gate;
 use Session;
 
-// use Illuminate\Support\Facades\URL;
-
-// use PayPal\Api\Amount;
-// use PayPal\Api\Details;
-// use PayPal\Api\Item;
-// use PayPal\Api\ItemList;
-// use PayPal\Api\Payer;
-// // use PayPal\Api\Payment;
-// use PayPal\Api\RedirectUrls;
-// use PayPal\Api\Transaction;
-
-
-// use PayPal\Api\ChargeModel;
-// use PayPal\Api\Currency;
-// use PayPal\Api\MerchantPreferences;
-// use PayPal\Api\PaymentDefinition;
-// use PayPal\Api\Plan;
-// use PayPal\Api\Patch;
-// use PayPal\Api\PatchRequest;
-// use PayPal\Common\PayPalModel;
-// use PayPal\Rest\ApiContext;
-// use PayPal\Auth\OAuthTokenCredential;
-
 
 class PaymentsController extends Controller
 {
@@ -134,28 +111,7 @@ class PaymentsController extends Controller
 
         return $data;
         
-        // return [
-        //     // if payment is not recurring cart can have many items
-        //     // with name, price and quantity
-        //     'items' => [
-        //         [
-        //             'name' => "product 21",
-        //             'price' => 20,
-        //             'qty' => 1
-        //         ],
-                
-        //     ],
-
-        //     // return url is the url where PayPal returns after user confirmed the payment
-        //     'return_url' => url('/paypal/express-checkout-success'),
-        //     // every invoice id must be unique, else you'll get an error from paypal
-        //     'invoice_id' => config('paypal.invoice_prefix') . '_' . $payment_id,
-        //     'invoice_description' => "Order #" . $payment_id . " Invoice",
-        //     'cancel_url' => url('/'),
-        //     // total is calculated by multiplying price with quantity of all cart items and then adding them up
-        //     // in this case total is 20 because Product 1 costs 10 (price 10 * quantity 1) and Product 2 costs 10 (price 5 * quantity 2)
-        //     'total' => 20
-        // ];
+        
         
        
     }
