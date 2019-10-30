@@ -1,4 +1,4 @@
-# LaraEventTickets: Laravel 5.4 based system for event organizers to manage and sell tickets.
+# Event Ticketing with Laravel: Laravel 5.4 based system for event organizers to manage and sell tickets.
 
 This project is a modified version of the LaraEventTickets created by David Lun.
 
