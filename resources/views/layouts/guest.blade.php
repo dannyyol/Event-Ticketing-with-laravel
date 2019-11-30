@@ -66,7 +66,7 @@
                                 @auth
                                 <ul class="account_list">
                                         <li class="nav-item dropdown submenu">
-                                            <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-transform: capitalize;">
                                             {{auth()->user()->name}}
                                             </a>
                                             <ul class="dropdown-menu">
@@ -106,29 +106,19 @@
                                 <ul class="navbar-nav mr-auto">
                                     <li class="nav-item dropdown submenu active">
                                         <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Home <i class="fa fa-angle-down" aria-hidden="true"></i>
+                                        Home
                                         </a>
-                                        <ul class="dropdown-menu">
-                                            
-                                        </ul>
                                     </li>
                                     <li class="nav-item dropdown submenu">
-                                        <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Pages <i class="fa fa-angle-down" aria-hidden="true"></i>
+                                    <a class="nav-link dropdown-toggle" href="" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Contact <i class="fa fa-angle-down" aria-hidden="true"></i>
                                         </a>
                                         <ul class="dropdown-menu">
+                                            <li><a href="mailto:hello@iclassticket.com">hello@iclassticket.com</a></li>
                                         </ul>
                                     </li>
-                                    <li class="nav-item dropdown submenu">
-                                        <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Shop <i class="fa fa-angle-down" aria-hidden="true"></i>
-                                        </a>
-                                        <ul class="dropdown-menu">
-                                        </ul>
-                                    </li>
-                                    <li class="nav-item"><a class="nav-link" href="#">Blog</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="#">lookbook</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+                                    
+                                    <li class="nav-item"><a class="nav-link" href="{{ route('guest.contact')}}">Contact Us</a></li>
                                 </ul>
                                 @auth
                                 <ul class="navbar-nav justify-content-end">

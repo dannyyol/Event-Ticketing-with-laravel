@@ -98,7 +98,7 @@ class CategoryController extends Controller
         }
         $category=Category::find($id);
         $category->update($request->all());
-        return redirect()->route('admin.events.categories.index');    
+        return back(); 
     }
 
     /**

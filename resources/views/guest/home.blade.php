@@ -228,7 +228,7 @@
 
 														@can('payment_access')
 															<li>
-															<a href="#" class="add_cart_btn" data-toggle="modal" data-target="#{{$event->id}}">
+															<a href="" class="add_cart_btn" data-toggle="modal" data-target="#modal-{{$event->id}}">
 																	Buy Ticket
 																</a>
 															</li>
@@ -248,12 +248,18 @@
 														</ul>
 														
 														<h4>{{  $event->title}}</h4>
-														@foreach ($event->tickets as $ticket)
-															<h5>${{$ticket->price}}</h5>
-														@endforeach
+														
+														{{-- @foreach ($event->tickets as $ticket) --}}
+															@if ($event->tickets)
+																<h5>${{$event->tickets->price}}</h5>
+															@endif
+														{{-- @endforeach --}}
 														
 													</div>
+													
+													
 												</div>
+												
 											</div>
 										@endforeach
 									</div>
@@ -285,7 +291,7 @@
 													{{-- <li><a class="add_cart_btn" href="#"></a></li> --}}
 													@can('payment_access')
 														<li>
-														<a href="#" class="add_cart_btn" data-toggle="modal" data-target="#{{$event->id}}">
+														<a href="#" class="add_cart_btn" data-toggle="modal" data-target="#modal-{{$event->id}}">
 																Buy Ticket
 															</a>
 														</li>
@@ -306,9 +312,9 @@
 												</ul>
 													
 												<h4>{{  $event->title}}</h4>
-												@foreach ($event->tickets as $ticket)
-													<h5>${{$ticket->price}}</h5>
-												@endforeach
+												@if ($event->tickets)
+													<h5>${{$event->tickets->price}}</h5>
+												@endif
 												
 											</div>
 										</div>
@@ -317,21 +323,39 @@
 									{{-- <form action="" method="POST"> --}}
 										
 									
-									
 								@endforeach
 							</div>
 
 					</div>
 						<hr>
 					@else
-						@foreach ($subcategories as $subcategory)
+						@forelse ($subcategories as $subcategory)
 							<div class="fillter_home_sidebar">
+								
 								<ul class="portfolio_filter">
-									<li><a>{{$subcategory->title}}</a></li>
+									@foreach ($subcategory->events as $item)
+										@if (!empty($item))
+											@if ($loop->first)
+												<li><a>{{$subcategory->title}}</a></li>
+											@endif
+										@endif
+										
+									@endforeach
 									
 								</ul>
-								<div class="home_l_product_slider owl-carousel">
-									@foreach ($subcategory->events->slice(0, 10) as $item)
+								<div class="home_l_product_slider 
+									@foreach ($subcategory->events as $item)
+										@if (!empty($item))
+											@if ($loop->first)
+											owl-carousel
+											@endif
+										@endif
+										
+									@endforeach
+								
+								">
+								@forelse ($subcategory->events->slice(0, 10) as $item)
+									
 										<div class="item woman shoes">
 											<div class="l_product_item">
 												<div class="l_p_img">
@@ -345,7 +369,7 @@
 
 															@can('payment_access')
 																<li>
-																<a href="#" class="add_cart_btn" data-toggle="modal" data-target="#{{$item->id}}">
+																<a href="#" class="add_cart_btn" data-toggle="modal" data-target="#modal-{{$item->id}}">
 																		Buy Ticket
 																	</a>
 																</li>
@@ -371,9 +395,9 @@
 													<p class="hover-text" id="{{$t->event->id}}-count" class="btn btn-sm btn-default">{{$t->event->likes()->count()}}</p> --}}
 													</ul>
 													<h4>{{$item->title}}</h4>
-													@foreach ($item->tickets as $ticket)
-														<h5>${{$ticket->price}}</h5>
-													@endforeach
+													@if ($item->tickets)
+														<h5>${{$item->tickets->price}}</h5>
+													@endif
 													
 												</div>
 											</div>
@@ -392,201 +416,48 @@
 									@endif
 										
 									{{-- @endif --}}
+									@empty
 										
-									@endforeach	
+									
+										
+									@endforelse
 									
 														
 								</div>
 							</div>
 							<hr>
-						@endforeach
+							@empty
+								
+							<p> No Event is available</p>
+						@endforelse
 					@endif
 
+				@foreach ($events as $event)
 
-					{{-- modal --}}
-
-					@foreach ($events as $event)
-
-					<div class="modal fade" id="{{$event->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-						<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+					{{--modal dele  --}}
+					<div id="modal-{{$event->id}}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="my-modal-title" aria-hidden="true">
+						<div class="modal-dialog" role="document">
 							<div class="modal-content">
-								{{-- <div class="modal-header" style="padding:0px !important;">
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-									<span aria-hidden="true" style="font-size:25px;color:white;z-index:1;position:absolute;">&times;</span>
-								</button>
-								</div> --}}
-								
-								<div class="modal-body" style="margin-top:-20px;padding:0px !important;padding-left:0px !important;"> 
-									<div class="__display_image">
-										<img src="{{ url('images/events', $event->photo) }}"  alt="" style="">
-									</div>
-										
-									@foreach($event->tickets as $ticket)
-									
-										@if(!$tickets->isEmpty())
-											<script type="text/javascript">
-												$(document).ready(function(){
-														$('.ticket-{{ $ticket->id }} .quantity').on('click keyup change blur', function() {
-															var quantity = parseInt($('.ticket-{{ $ticket->id }} .quantity').val());
-															if(isNaN(quantity)) {
-																quantity = 0;
-																$('.ticket-{{ $ticket->id }} .quantity').val(0);
-															} else if (quantity < 0) {
-																quantity = 0;
-																$('.ticket-{{ $ticket->id }} .quantity').val(0);
-															} else if (quantity > {{ $ticket->amount }}) {
-																quantity = parseInt({{ $ticket->amount }});
-																$('.ticket-{{ $ticket->id }} .quantity').val({{ $ticket->amount }});
-															}
-															var subtotal = parseFloat({{ $ticket->price }}) * quantity;
-															$('.ticket-{{ $ticket->id }} .subtotal').text(subtotal.toFixed(2));
-															$('.ticket-{{ $ticket->id }} .rsubtotal').val(subtotal.toFixed(2));
-															
-															var x = $("#unit_price").val();
-														});
-													$('.quantity').on('click keyup change blur', function () {
-														var sum = 0;
-														var collection = { tickets: [] };
-														$('.quantity').each(function () {
-															var ticket = {};
-															ticket['id'] = $(this).data('ticket');
-															ticket['amount'] = $(this).val();
-															collection.tickets.push(ticket);
-														});
-														$('.rsubtotal').each(function () {
-															sum += Number($(this).val());
-															$('.rtotal').val(sum.toFixed(2));
-															$('.total').text(sum.toFixed(2));
-														});
-														$('input[name=tickets]').val(JSON.stringify(collection));
-														
-													});
-												});																
-											</script>
-										@endif
-									@endforeach
-										</form>
-
-									{{-- something here --}}
-								
-								<div class="panel-body">
-									{{-- <i class="fa"></i> --}}
-									<div class="__event">
-										<div>
-											<h2>{{ $event->title }}</h2>
-										</div>
-										<div class="__calendar">
-											<i class="fa fa-calendar" aria-hidden="true" style="font-size:16px;">  {{ Carbon\Carbon::parse($event->start_time)->format('l jS \\of F Y h:i:s A') }}</i>
-											<p></p>
-										</div>		
-									</div>
-									
+								<div class="modal-header">
+									<button class="close" data-dismiss="modal" aria-label="Close">
+										<span aria-hidden="true">&times;</span>
+									</button>
 								</div>
-								<br>
-								<div class="__description">
-									<p><b>#{{$event->subcategories->title}}</b></p>
-									<p><b>Tickets</b></p>
-									@foreach ($event->tickets as $ticket)
-										{{-- <p class="__ticket"><i class="fa fa-ticket" aria-hidden="true"></i> {{$ticket->title}}</p> --}}
-										{{-- @foreach ($cartItems as $item) --}}
-											<a href="{{route('cart.addItem', $ticket->id)}}">{{$ticket->title}}</a>
-										{{-- @endforeach --}}
-									@endforeach
-									
-									<div class="__event_details" style="padding-top:10px;">
-										<p><b>General Info</b></p>
-										<p> <i class="fa fa-clock-o" aria-hidden="true"></i> Date and time: {{ Carbon\Carbon::parse($event->start_time)->format('l jS \\of F Y h:i:s A') }}</p>
-										<p> <i class="fa fa-location-arrow" aria-hidden="true"></i> Venue: {{$event->venue}}</p>
-									</div>
-									<div style="margin-top:15px;">
-										{{-- <p><b>Description</b></p> --}}
-										<p>
-											{!! $event->description !!}
-										</p>
-									</div>
-									
+								<div class="modal-body">
+									<a name="" id="" class="btn btn-primary btn-block" href="{{ route('events.show', [$event->id,'paypal'=>1]) }}" role="button">Pay with paypal</a>
+									<h4 align="center">OR</h4>
+									<a name="" id="" class="btn btn-primary btn-block" href="{{ route('events.show', [$event->id,'stripes'=>2]) }}" role="button">Pay with stripes</a>
+
+
 								</div>
-							
-								@if(!$event->tickets->isEmpty())
-									<div class="__tickets_bill">
-										<h3>Buy Tickets</h3>
-										<form action="{{ route('paypal.express-checkout') }}" method="POST" id="payment-form">
-											{{ csrf_field() }}
-											<table class="table table-striped table-tickets">
-												<thead class="thead-light">
-													<th>Type</th>
-													<th>Quantity</th>
-													<th>Price</th>
-													<th>Total</th>
-												</thead>
-												<tbody>
-													@foreach($event->tickets as $ticket)
-														<tr class="ticket-{{ $ticket->id }}">
-															<td>{{ $ticket->title }}</td>
-															<td><input
-																		type="number"
-																		name="qty"
-																		class="quantity form-control"
-																		min="0"
-																		max="{{ $ticket->amount }}"
-																		step="1"
-																		value="0"
-																		data-ticket="{{ $ticket->id }}">
-															</td>
-															
-															<td><strong>${{$ticket->price}}</strong></td>
-															<input type="hidden" id="unit_price" name="amount_price" value="{{ $ticket->price }}">
-															<td>
-																<strong class="subtotal">0.00</strong><strong>&nbsp;$</strong>
-																<input
-																		class="rsubtotal"
-																		type="hidden" value="0.00" name="total"
-																		disabled>
-															</td>
-														</tr>
-													@endforeach
-														<tr class="last">
-															<td colspan="3"></td>
-															<td><strong class="total">0.00</strong><strong>&nbsp;$</strong><input type="hidden" name="total" class="rtotal" value="0.00"></td>
-														</tr>
-												</tbody>
-											</table>
-											{{-- somethin here --}}
-											<div class="input-group">
-												<span class="input-group-addon">@</span>
-												<input type="email" name="email" class="form-control" placeholder="email@example.com" required>
-											</div>
-											
-											<input type="hidden" name="event_title" value="{{$event->title}}">
-											
-											<div class="modal-footer" style="padding:10px 0px 10px 0px !important;">
-												<button type="submit" class="btn btn-primary float-left" style="width:100%;">Pay with Paypal</button>
-												<button type="button" class="btn btn-danger float-right" data-dismiss="modal">Close</button>
-
-											</div>
-										</div>
-									</form>
-								@else
-									<div class="modal-footer" style="padding:10px !important;">
-										<button type="submit" class="btn btn-warning text-white float-left" style="width:100%;">We're sorry, but there are no tickets available</button>
-
-										<button type="button" class="btn btn-danger float-right" data-dismiss="modal">Close</button>
-
-									</div>
-								@endif
-								</div>
-									
-									
 								
-
-								
-								</div>
 							</div>
 						</div>
-						
-					@endforeach
-					
+					</div>
 
+					
+				@endforeach
+				
 				</div>
 				@if (Request::get('id'))
 					{!! $events->links('vendor.pagination.event_pagination') !!}

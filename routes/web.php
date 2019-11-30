@@ -11,14 +11,20 @@ use App\Subcategory;
 
 // $this->get('/', 'Guest\EventsController@index')->name('guest.home');
 Route::get('/', 'Guest\EventsController@index')->name('guest.home');
-
+Route::get('contact', 'Guest\HomeController@contact')->name('guest.contact');
 //$this->get('events', 'Guest\EventsController@index')->name('events.index');
-//$this->get('events/{event}', 'Guest\EventsController@show')->name('events.show');
+$this->get('events/{event}', 'Guest\EventsController@show')->name('events.show');
 $this->resource('events', 'Guest\EventsController');
 
 $this->post('payment', 'Guest\PaymentsController@store')->name('guest.payment');
 
 Route::resource('subcategory', 'Guest\SubcategoryController');
+// Socalite Authentication google
+Route::get('/google/redirect', 'Socialites\SocialAuthGoogleController@redirect');
+Route::get('/call_back', 'Socialites\SocialAuthGoogleController@call_back');
+// Socalite Authentication facebook
+Route::get('/redirect', 'Socialites\SocialAuthFacebookController@redirect');
+Route::get('/callback', 'Socialites\SocialAuthFacebookController@callback');
 
 // Authentication Routes...
 $this->get('login', 'Auth\LoginController@showLoginForm')->name('auth.login');
@@ -71,6 +77,9 @@ Route::group(['middleware', 'auth'], function(){
     Route::post('paypal/express-checkout', 'Guest\PaymentsController@expressCheckout')->name('paypal.express-checkout');
     Route::get('paypal/express-checkout-success', 'Guest\PaymentsController@expressCheckoutSuccess');
     Route::post('paypal/notify', 'Guest\PaymentsController@notify');
+
+    $this->post('payment/stripe', 'Guest\StripeController@store')->name('payment');
+
 
 });
 

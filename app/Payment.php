@@ -1,6 +1,6 @@
 <?php
 namespace App;
-
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 */
 class Payment extends Model
 {
+    use Notifiable;
     protected $fillable = ['email', 'merchant', 'amount'];
     
 

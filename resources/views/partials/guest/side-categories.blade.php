@@ -35,16 +35,16 @@
 							@guest()
 								<a href="{{ route("auth.login")}}">
 							@endif
-							<a href="#" class="" data-toggle="modal" data-target="#{{$item->id}}">
+							<a href="#" class="" data-toggle="modal" data-target="#modal-{{$item->id}}">
 								<div class="media">
 									<div class="d-flex">
 										<img src="{{ url('images/events', $item->photo) }}" alt="" width='80', height='80'>
 									</div>
 									<div class="media-body">
 										<h4>{{$item->title}}</h4>
-											@foreach ($item->tickets as $ticket)
+											{{-- @foreach ($item->tickets as $ticket)
 												<h5>${{$ticket->price}}</h5>
-											@endforeach
+											@endforeach --}}
 										
 									</div>
 								</div>

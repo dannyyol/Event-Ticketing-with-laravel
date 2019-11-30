@@ -21,6 +21,8 @@ use Illuminate\Support\Facades\Request;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Support\Facades\Gate;
 use Session;
+use Illuminate\Notifications\Notifiable;
+use App\Notifications\TemplateEmail;
 
 
 class PaymentsController extends Controller
@@ -37,26 +39,25 @@ class PaymentsController extends Controller
         }
         Cart::destroy();
         Cart::add("Paypal",$request::input('event_title'), $request::input('qty'), $request::input('amount_price'));
-
-        
+  
         $recurring = $request::input('recurring', false) ? true : false;
-      
-        // get new invoice id
-        $payment_id = Payment::count() + 1;
-            
-        // Get the cart data
-        $cart = $this->getCart($recurring, $payment_id);
       
         // create new invoice
         $payment = new Payment();
         $payment->email = $request::input('email');
         $payment->merchant = 'Paypal';
-        $payment->amount = $cart['total'];
+        $payment->amount = $request::input('total');
         // dd($cart['total']);
         
         // dd(Cart::content());
         // dd(Cart::content());
         $payment->save();
+        // get new invoice id
+        $payment_id = $payment->id;
+        
+            
+        // Get the cart data
+        $cart = $this->getCart($recurring, $payment_id);
         
       
         // send a request to paypal 
@@ -66,11 +67,11 @@ class PaymentsController extends Controller
       
         // if there is no link redirect back with error message
         if (!$response['paypal_link']) {
-          return redirect('/')->with(['code' => 'danger', 'message' => 'Something went wrong with PayPal']);
+          return back()->with('danger', 'Something went wrong with PayPal');
           // For the actual error message dump out $response and see what's in there
         }
       
-        // redirect to paypalZ
+        // redirect to paypal
         // after payment is done paypal
         // will redirect us back to $this->expressCheckoutSuccess
         return redirect($response['paypal_link']);
@@ -188,21 +189,24 @@ class PaymentsController extends Controller
         // save the invoice
         $payment->save();
 
+        $payment->email; // This is the email you want to send to.
+        $payment->notify(new TemplateEmail());
+        
+
 
         // App\Invoice has a paid attribute that returns true or false based on payment status
         // so if paid is false return with error, else return with success message
-        if ($payment->paid) {
-            Session::flash('success',  $payment->id . ' has been paid successfully!');
+        if ($payment->payment_status=="Completed") {
+            Session::flash('success', 'Ticket with order ' . $payment->id . ' has been paid successfully!');
             return back();
         }
-        elseif($payment->payment_status=="pending"){
-            Session::flash('info', "Sorry your payment is pending ");
+        if ($payment->payment_status=="Pending") {
+            Session::flash('success', 'Ticket with order ' . $payment->id . ' has been pended!');
             return back();
         }
-        else{
-        Session::flash('danger', 'Error processing PayPal payment for Order ' . $payment->id . '!');
+        Session::flash('danger', 'Error processing PayPal payment for ticket Order ' . $payment->id . '!');
         return back();  
-        }      
+           
     }
 }
 

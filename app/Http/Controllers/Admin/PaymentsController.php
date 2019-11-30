@@ -22,7 +22,7 @@ class PaymentsController extends Controller
             return abort(401);
         }
 
-        $payments = Payment::all();
+        $payments = Payment::where('payment_status', 'Completed')->orWhere('payment_status', 'Pending')->get();
 
         return view('admin.payments.index', compact('payments'));
     }

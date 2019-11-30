@@ -18,7 +18,7 @@
             <table class="table table-bordered table-striped {{ count($payments) > 0 ? 'datatable' : '' }} ">
                 <thead>
                     <tr>
-                        
+                        <th>S/N</th>
                         <th>@lang('quickadmin.payments.fields.email')</th>
                         <th>@lang('quickadmin.payments.fields.merchant')</th>
                         <th>@lang('quickadmin.payments.fields.amount')</th>
@@ -28,10 +28,11 @@
                 </thead>
                 
                 <tbody>
+                    <?php $x=1; ?>
                     @if (count($payments) > 0)
                         @foreach ($payments as $payment)
                             <tr data-entry-id="{{ $payment->id }}">
-                                
+                                <td><?php echo $x++; ?></td>
                                 <td>{{ $payment->email }}</td>
                                 <td>{{ $payment->merchant }}</td>
                                 <td>{{ $payment->amount }}</td>

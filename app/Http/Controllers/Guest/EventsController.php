@@ -48,6 +48,10 @@ class EventsController extends Controller
 
             $subcategory = Subcategory::find($request->ids);
             $events = $subcategory->events()->paginate(10);
+            // foreach($events as $eventsss){
+            //     dd($eventsss->tickets->price);
+            // }
+            
             $events->withPath('?ids='.$request->ids);
             $tickets = Ticket::with('event')->orderBy('price', 'ASC')->get();
 
